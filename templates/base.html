@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GatePass - Digital Visitor Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+    <!-- Navbar -->
+    <nav class="bg-slate-900 text-white shadow-lg border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col md:flex-row justify-between items-center gap-3">
+            <a href="{{ url_for('index') }}" class="text-xl font-bold tracking-wider flex items-center gap-3">
+                <span class="bg-gradient-to-tr from-indigo-500 to-violet-500 text-white p-2 rounded-xl shadow-md">🛡️</span> 
+                <span>GATE<span class="text-indigo-400">PASS</span></span>
+            </a>
+            
+            <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+                <a href="{{ url_for('index') }}" class="px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition hover:bg-slate-800 text-slate-300 hover:text-white">Dashboard</a>
+                <a href="{{ url_for('register') }}" class="px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition hover:bg-slate-800 text-slate-300 hover:text-white">New Visitor</a>
+                <a href="{{ url_for('blacklist') }}" class="px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition hover:bg-slate-800 text-rose-400 hover:text-rose-300">Blacklist</a>
+                <a href="{{ url_for('verify') }}" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium shadow-md shadow-indigo-500/20 transition flex items-center gap-1.5">
+                    <span>📷</span> Scanner / Verify
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-4 w-full">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="p-4 mb-3 rounded-xl text-sm flex items-center gap-3 shadow-sm border {% if category == 'success' %}bg-emerald-50 text-emerald-800 border-emerald-200{% else %}bg-rose-50 text-rose-800 border-rose-200{% endif %}">
+                        <span class="text-lg">{% if category == 'success' %}✅{% else %}⚠️{% endif %}</span>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-grow w-full">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 text-center py-5 text-xs text-slate-400 mt-auto px-4">
+        GatePass Secure Facility Management System &copy; 2026 &bull; All Rights Reserved
+    </footer>
+</body>
+</html>

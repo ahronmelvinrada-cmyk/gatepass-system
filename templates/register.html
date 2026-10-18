@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-200/80">
+    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+        <span class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl text-xl">📝</span>
+        <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900">Register New Visitor</h2>
+            <p class="text-xs text-slate-500">Enter visitor details and capture photo to issue an official entry pass.</p>
+        </div>
+    </div>
+
+    <form method="POST" class="space-y-4">
+        <!-- Photo Capture Section -->
+        <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">ID Photo Snapshot</label>
+            <div class="flex flex-col sm:flex-row gap-4 items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div class="w-full sm:w-48 h-48 sm:h-36 bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center relative">
+                    <video id="webcam" autoplay playsinline class="w-full h-full object-cover"></video>
+                    <canvas id="canvas" class="hidden w-full h-full object-cover"></canvas>
+                </div>
+                <input type="hidden" name="photo_data" id="photoData">
+                
+                <div class="flex flex-col gap-2 w-full sm:w-auto">
+                    <button type="button" onclick="takeSnapshot()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 sm:py-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-sm">
+                        <span>📷</span> Capture Photo
+                    </button>
+                    <button type="button" onclick="switchCamera()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 sm:py-2 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1.5">
+                        <span>🔄</span> Switch Camera
+                    </button>
+                    <button type="button" onclick="retakePhoto()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2.5 sm:py-2 rounded-lg text-xs font-medium transition text-center">
+                        Retake
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Name & Category -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Full Name</label>
+                <input type="text" name="full_name" placeholder="e.g. Juan Dela Cruz" required class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Visitor Category</label>
+                <select name="visitor_category" class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    <option value="Parent/Guardian">Parent / Guardian</option>
+                    <option value="Delivery/Courier">Delivery / Courier</option>
+                    <option value="Supplier">Supplier</option>
+                    <option value="Official Guest">Official Guest</option>
+                    <option value="Maintenance">Maintenance</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Contact & Visiting Department -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Contact Number</label>
+                <input type="text" name="contact_number" placeholder="09123456789" required class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Person / Dept to Visit</label>
+                <input type="text" name="person_to_visit" placeholder="e.g. Registrar Office" required class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+        </div>
+
+        <!-- Purpose of Visit -->
+        <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Purpose of Visit</label>
+            <input type="text" name="purpose" placeholder="e.g. Document Request, Official Meeting" required class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+        </div>
+
+        <!-- ID Type & Reference Number -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">ID Presented</label>
+                <select name="id_type" class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    <option value="Driver's License">Driver's License</option>
+                    <option value="Company ID">Company ID</option>
+                    <option value="Government ID">Government ID / Passport</option>
+                    <option value="Student ID">Student ID</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">ID Reference Number</label>
+                <input type="text" name="id_number" placeholder="ID Number" required class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+        </div>
+
+        <!-- Vehicle Details -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Vehicle Type</label>
+                <select name="vehicle_type" class="w-full border border-slate-200 bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    <option value="None">Walk-in (No Vehicle)</option>
+                    <option value="Car / SUV">Car / SUV</option>
+                    <option value="Motorcycle">Motorcycle</option>
+                    <option value="Delivery Truck / Van">Delivery Truck / Van</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Plate Number (Optional)</label>
+                <input type="text" name="plate_number" placeholder="ABC-1234" class="w-full border border-slate-200 bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="pt-4 flex flex-col-reverse sm:flex-row justify-end gap-3 border-t border-slate-100 mt-6">
+            <a href="{{ url_for('index') }}" class="w-full sm:w-auto text-center px-5 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Cancel</a>
+            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition shadow-md shadow-indigo-500/20">Generate Pass</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const video = document.getElementById('webcam');
+    const canvas = document.getElementById('canvas');
+    const photoInput = document.getElementById('photoData');
+
+    let currentStream = null;
+    let currentFacingMode = "user"; // Unang magsisimula sa Front Camera ("user"), pwede ring "environment" para sa Back
+
+    function stopCurrentStream() {
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+        }
+    }
+
+    function startCamera(facingMode) {
+        stopCurrentStream();
+
+        navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: facingMode,
+                width: { ideal: 640 },
+                height: { ideal: 480 }
+            }
+        })
+        .then(stream => {
+            currentStream = stream;
+            video.srcObject = stream;
+            currentFacingMode = facingMode;
+        })
+        .catch(err => {
+            console.log("Error starting camera mode:", facingMode, err);
+            // Fallback kung hindi gumana ang napiling mode
+            if (facingMode === "environment") {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        currentStream = stream;
+                        video.srcObject = stream;
+                    });
+            }
+        });
+    }
+
+    // Unang pag-load ng pahina
+    startCamera(currentFacingMode);
+
+    function switchCamera() {
+        // Palitan ang facing mode (pag Front, gagawing Back; pag Back, gagawing Front)
+        const newMode = (currentFacingMode === "user") ? "environment" : "user";
+        startCamera(newMode);
+    }
+
+    function takeSnapshot() {
+        const context = canvas.getContext('2d');
+        canvas.width = 300;
+        canvas.height = 225;
+        context.drawImage(video, 0, 0, 300, 225);
+        const dataUrl = canvas.toDataURL('image/png');
+        photoInput.value = dataUrl;
+        video.classList.add('hidden');
+        canvas.classList.remove('hidden');
+    }
+
+    function retakePhoto() {
+        photoInput.value = "";
+        canvas.classList.add('hidden');
+        video.classList.remove('hidden');
+    }
+</script>
+{% endblock %}

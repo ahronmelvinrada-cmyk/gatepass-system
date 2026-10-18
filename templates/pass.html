@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white rounded-2xl shadow-md border border-slate-200/80 overflow-hidden print:shadow-none print:border-none">
+    <div class="bg-indigo-600 text-white p-6 text-center">
+        <h2 class="text-lg font-bold tracking-wide">GATE ACCESS PASS</h2>
+        <p class="text-indigo-200 text-xs mt-1">Official Facility Entry Permit</p>
+    </div>
+    
+    <div class="p-6 flex flex-col items-center">
+        {% if visitor.photo_data %}
+            <img src="{{ visitor.photo_data }}" alt="Visitor Snapshot" class="w-24 h-24 rounded-full object-cover border-4 border-indigo-100 shadow-sm mb-4">
+        {% endif %}
+
+        <div class="p-3 bg-white border-2 border-slate-100 rounded-xl shadow-inner mb-4">
+            <img src="data:image/png;base64,{{ qr_code_img }}" alt="QR Pass Code" class="w-48 h-48">
+        </div>
+        <p class="font-mono text-lg font-bold text-indigo-600 tracking-wider mb-6">{{ visitor.pass_code }}</p>
+
+        <div class="w-full space-y-2 text-sm border-t border-slate-100 pt-4 text-slate-600">
+            <div class="flex justify-between"><span class="text-slate-400">Visitor Name:</span><span class="font-semibold text-slate-800">{{ visitor.full_name }}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Category:</span><span class="font-semibold text-slate-800">{{ visitor.visitor_category }}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Visiting:</span><span class="font-semibold text-slate-800">{{ visitor.person_to_visit }}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Purpose:</span><span class="font-semibold text-slate-800">{{ visitor.purpose }}</span></div>
+            {% if visitor.vehicle_type != 'None' %}
+            <div class="flex justify-between"><span class="text-slate-400">Vehicle / Plate:</span><span class="font-semibold text-slate-800">{{ visitor.vehicle_type }} ({{ visitor.plate_number }})</span></div>
+            {% endif %}
+            <div class="flex justify-between"><span class="text-slate-400">Entry Time:</span><span class="font-semibold text-slate-800">{{ visitor.entry_time }}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Status:</span><span class="text-emerald-600 font-bold">{{ visitor.status }}</span></div>
+        </div>
+    </div>
+
+    <div class="p-4 bg-slate-50 border-t border-slate-100 flex gap-3 print:hidden">
+        <button onclick="window.print()" class="w-full bg-slate-900 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 transition shadow-sm">Print Pass</button>
+        <a href="{{ url_for('index') }}" class="w-full text-center bg-white border border-slate-200 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">Done</a>
+    </div>
+</div>
+{% endblock %}

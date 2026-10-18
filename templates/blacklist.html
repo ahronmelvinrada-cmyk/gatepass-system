@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
+        <h2 class="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
+            <span class="p-2 bg-rose-50 text-rose-600 rounded-xl">⛔</span> Security Blacklist Management
+        </h2>
+        <p class="text-xs text-slate-500 mb-6">Restricted individuals added here will be blocked automatically during registration.</p>
+
+        <form method="POST" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <input type="text" name="full_name" placeholder="Full Name to Block" required class="border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500">
+            <input type="text" name="reason" placeholder="Reason (e.g. Banned, Violation)" required class="border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500">
+            <button type="submit" class="bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-sm font-semibold transition">Add to Blacklist</button>
+        </form>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm border-collapse">
+                <thead>
+                    <tr class="bg-slate-50 text-slate-400 uppercase text-xs border-b border-slate-200">
+                        <th class="py-3 px-4 font-semibold">Full Name</th>
+                        <th class="py-3 px-4 font-semibold">Reason</th>
+                        <th class="py-3 px-4 font-semibold">Date Added</th>
+                        <th class="py-3 px-4 font-semibold text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-slate-700">
+                    {% for item in blocked_list %}
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-3 px-4 font-bold text-rose-600">{{ item.full_name }}</td>
+                        <td class="py-3 px-4">{{ item.reason }}</td>
+                        <td class="py-3 px-4 text-xs text-slate-500">{{ item.date_added }}</td>
+                        <td class="py-3 px-4 text-right">
+                            <form action="{{ url_for('remove_blacklist', id=item.id) }}" method="POST" class="inline">
+                                <button type="submit" class="text-xs text-slate-500 hover:text-slate-800 underline">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="py-6 text-center text-slate-400">No blacklisted records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
