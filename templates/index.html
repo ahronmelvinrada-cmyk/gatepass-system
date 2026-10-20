@@ -2,36 +2,36 @@
 {% block content %}
 <!-- Top Summary Cards -->
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
-    <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between relative overflow-hidden group hover:shadow-md transition">
+    <div class="bg-slate-900/90 p-5 md:p-6 rounded-2xl border border-slate-800 shadow-sm flex items-center justify-between relative overflow-hidden group hover:shadow-md transition">
         <div class="absolute right-0 top-0 bottom-0 w-2 bg-indigo-500"></div>
         <div>
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Currently Inside Facility</p>
-            <h3 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-1">{{ active_count }}</h3>
+            <h3 class="text-3xl md:text-4xl font-extrabold text-white mt-1">{{ active_count }}</h3>
         </div>
-        <div class="w-12 h-12 md:w-14 md:h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 text-xl md:text-2xl shadow-inner">👥</div>
+        <div class="w-12 h-12 md:w-14 md:h-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400 text-xl md:text-2xl border border-indigo-500/20">👥</div>
     </div>
 
-    <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between relative overflow-hidden group hover:shadow-md transition">
+    <div class="bg-slate-900/90 p-5 md:p-6 rounded-2xl border border-slate-800 shadow-sm flex items-center justify-between relative overflow-hidden group hover:shadow-md transition">
         <div class="absolute right-0 top-0 bottom-0 w-2 bg-emerald-500"></div>
         <div>
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Visitors Today</p>
-            <h3 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-1">{{ today_count }}</h3>
+            <h3 class="text-3xl md:text-4xl font-extrabold text-white mt-1">{{ today_count }}</h3>
         </div>
-        <div class="w-12 h-12 md:w-14 md:h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 text-xl md:text-2xl shadow-inner">📊</div>
+        <div class="w-12 h-12 md:w-14 md:h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 text-xl md:text-2xl border border-emerald-500/20">📊</div>
     </div>
 </div>
 
 <!-- Main Visitor Logs Container -->
-<div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+<div class="bg-slate-900/90 rounded-2xl border border-slate-800 shadow-sm overflow-hidden">
     <!-- Header & Search/Filter Section -->
-    <div class="p-4 md:p-6 border-b border-slate-100 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+    <div class="p-4 md:p-6 border-b border-slate-800 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
         <div>
-            <h2 class="text-base md:text-lg font-bold text-slate-900">Visitor Logs & Records</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Filter, search, and monitor facility passes in real-time.</p>
+            <h2 class="text-base md:text-lg font-bold text-white">Visitor Logs & Records</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Filter, search, and monitor facility passes in real-time.</p>
         </div>
 
         <form method="GET" action="{{ url_for('index') }}" class="flex flex-col sm:flex-row flex-wrap gap-2.5 w-full xl:w-auto">
-            <select name="category" onchange="this.form.submit()" class="w-full sm:w-auto border border-slate-200 rounded-xl text-sm bg-slate-50 px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select name="category" onchange="this.form.submit()" class="w-full sm:w-auto border border-slate-700 rounded-xl text-xs bg-slate-800 px-3 py-2 text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <option value="">All Categories</option>
                 <option value="Parent/Guardian" {% if category_filter == 'Parent/Guardian' %}selected{% endif %}>Parent / Guardian</option>
                 <option value="Delivery/Courier" {% if category_filter == 'Delivery/Courier' %}selected{% endif %}>Delivery / Courier</option>
@@ -41,24 +41,24 @@
             </select>
 
             <div class="relative w-full sm:w-64">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">🔍</span>
-                <input type="text" name="search" value="{{ search }}" placeholder="Search name, code, plate..." class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" name="search" value="{{ search }}" placeholder="Search name, code, plate..." class="w-full pl-9 pr-4 py-2 border border-slate-700 rounded-xl text-xs bg-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
             </div>
 
             <div class="flex items-center gap-2 w-full sm:w-auto">
-                <button type="submit" class="flex-1 sm:flex-none bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-slate-800 transition">Filter</button>
-                <a href="{{ url_for('export_csv') }}" class="flex-1 sm:flex-none justify-center bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-1 shadow-sm">
+                <button type="submit" class="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-xs font-medium transition border border-slate-700">Filter</button>
+                <a href="{{ url_for('export_csv') }}" class="flex-1 sm:flex-none justify-center bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1 shadow-sm">
                     <span>📥</span> Export CSV
                 </a>
             </div>
         </form>
     </div>
 
-    <!-- 1. DESKTOP VIEW: Table (Lalabas lang sa Medium Screens pataas) -->
+    <!-- 1. DESKTOP VIEW: Table -->
     <div class="hidden md:block overflow-x-auto">
-        <table class="w-full text-left border-collapse text-sm">
+        <table class="w-full text-left border-collapse text-xs">
             <thead>
-                <tr class="bg-slate-50/75 text-slate-400 uppercase text-xs tracking-wider border-b border-slate-200">
+                <tr class="bg-slate-950/60 text-slate-400 uppercase tracking-wider border-b border-slate-800 text-[11px]">
                     <th class="py-3.5 px-6 font-semibold">Pass Code</th>
                     <th class="py-3.5 px-6 font-semibold">Visitor Name</th>
                     <th class="py-3.5 px-6 font-semibold">Category</th>
@@ -69,40 +69,43 @@
                     <th class="py-3.5 px-6 font-semibold text-right">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100 text-slate-600">
+            <tbody class="divide-y divide-slate-800/60 text-slate-300">
                 {% for v in visitors %}
-                <tr class="hover:bg-slate-50/80 transition">
-                    <td class="py-4 px-6 font-mono font-bold text-indigo-600">{{ v.pass_code }}</td>
-                    <td class="py-4 px-6 font-semibold text-slate-900">{{ v.full_name }}</td>
+                <tr class="hover:bg-slate-800/40 transition">
+                    <td class="py-4 px-6 font-mono font-bold text-indigo-400">{{ v.pass_code }}</td>
+                    <td class="py-4 px-6 font-semibold text-white">{{ v.full_name }}</td>
                     <td class="py-4 px-6">
-                        <span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-medium">{{ v.visitor_category }}</span>
+                        <span class="px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg text-[11px] font-medium border border-slate-700">{{ v.visitor_category }}</span>
                     </td>
-                    <td class="py-4 px-6">{{ v.person_to_visit }}</td>
-                    <td class="py-4 px-6 text-xs">
-                        {% if v.vehicle_type != 'None' %}
-                            <span class="font-semibold text-slate-800">{{ v.vehicle_type }}</span>
-                            {% if v.plate_number %}<span class="block text-slate-400 font-mono">{{ v.plate_number }}</span>{% endif %}
+                    <td class="py-4 px-6 text-slate-400">{{ v.person_to_visit }}</td>
+                    <td class="py-4 px-6 text-slate-400">
+                        {% if v.vehicle_type and v.vehicle_type != 'None' %}
+                            <span class="font-semibold text-slate-300">{{ v.vehicle_type }}</span>
+                            {% if v.plate_number %}<span class="block text-slate-500 font-mono text-[10px]">{{ v.plate_number }}</span>{% endif %}
                         {% else %}
-                            <span class="text-slate-400">Walk-in</span>
+                            <span class="text-slate-500">Walk-in</span>
                         {% endif %}
                     </td>
-                    <td class="py-4 px-6 text-slate-500 text-xs">{{ v.entry_time }}</td>
+                    <td class="py-4 px-6 text-slate-400 text-[11px]">{{ v.entry_time }}</td>
                     <td class="py-4 px-6">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold {% if v.status == 'Active' %}bg-emerald-50 text-emerald-700 border border-emerald-200/60{% else %}bg-slate-100 text-slate-500 border border-slate-200{% endif %}">
-                            <span class="w-1.5 h-1.5 rounded-full {% if v.status == 'Active' %}bg-emerald-500 animate-pulse{% else %}bg-slate-400{% endif %}"></span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold {% if v.status == 'Active' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{% else %}bg-slate-800 text-slate-400 border border-slate-700{% endif %}">
+                            <span class="w-1.5 h-1.5 rounded-full {% if v.status == 'Active' %}bg-emerald-400 animate-pulse{% else %}bg-slate-500{% endif %}"></span>
                             {{ v.status }}
                         </span>
                     </td>
                     <td class="py-4 px-6 text-right">
-                        <a href="{{ url_for('view_pass', pass_code=v.pass_code) }}" class="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-700 font-medium text-xs bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition">View Pass</a>
+                        <div class="flex items-center justify-end gap-1.5">
+                            <a href="{{ url_for('edit_visitor', id=v.id) }}" class="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-medium text-[11px] bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-1.5 rounded-lg transition border border-amber-500/20">Edit</a>
+                            <a href="{{ url_for('view_pass', pass_code=v.pass_code) }}" class="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 font-medium text-[11px] bg-indigo-500/10 hover:bg-indigo-500/20 px-2.5 py-1.5 rounded-lg transition border border-indigo-500/20">View Pass</a>
+                        </div>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="8" class="py-12 text-center text-slate-400">
+                    <td colspan="8" class="py-12 text-center text-slate-500">
                         <div class="flex flex-col items-center justify-center gap-2">
                             <span class="text-3xl">📭</span>
-                            <p class="text-sm font-medium text-slate-500">No visitor records found.</p>
+                            <p class="text-xs font-medium text-slate-400">No visitor records found.</p>
                         </div>
                     </td>
                 </tr>
@@ -111,43 +114,46 @@
         </table>
     </div>
 
-    <!-- 2. MOBILE VIEW: Card List (Lalabas lang sa Cellphone / Small Screens) -->
-    <div class="block md:hidden divide-y divide-slate-100">
+    <!-- 2. MOBILE VIEW: Card List -->
+    <div class="block md:hidden divide-y divide-slate-800">
         {% for v in visitors %}
-        <div class="p-4 flex flex-col gap-3 hover:bg-slate-50/80 transition">
+        <div class="p-4 flex flex-col gap-3 hover:bg-slate-800/40 transition">
             <div class="flex items-center justify-between">
-                <span class="font-mono font-bold text-indigo-600 text-sm">{{ v.pass_code }}</span>
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold {% if v.status == 'Active' %}bg-emerald-50 text-emerald-700 border border-emerald-200/60{% else %}bg-slate-100 text-slate-500 border border-slate-200{% endif %}">
-                    <span class="w-1.5 h-1.5 rounded-full {% if v.status == 'Active' %}bg-emerald-500 animate-pulse{% else %}bg-slate-400{% endif %}"></span>
+                <span class="font-mono font-bold text-indigo-400 text-xs">{{ v.pass_code }}</span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold {% if v.status == 'Active' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{% else %}bg-slate-800 text-slate-400 border border-slate-700{% endif %}">
+                    <span class="w-1.5 h-1.5 rounded-full {% if v.status == 'Active' %}bg-emerald-400 animate-pulse{% else %}bg-slate-500{% endif %}"></span>
                     {{ v.status }}
                 </span>
             </div>
 
             <div>
-                <h4 class="font-bold text-slate-900 text-base">{{ v.full_name }}</h4>
+                <h4 class="font-bold text-white text-sm">{{ v.full_name }}</h4>
                 <div class="flex items-center gap-2 mt-1">
-                    <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-xs font-medium">{{ v.visitor_category }}</span>
-                    <span class="text-xs text-slate-400">• Visiting: <strong class="text-slate-600 font-medium">{{ v.person_to_visit }}</strong></span>
+                    <span class="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-[11px] font-medium border border-slate-700">{{ v.visitor_category }}</span>
+                    <span class="text-[11px] text-slate-400">• Visiting: <strong class="text-slate-300 font-medium">{{ v.person_to_visit }}</strong></span>
                 </div>
             </div>
 
-            <div class="flex items-center justify-between text-xs text-slate-500 pt-1 border-t border-slate-50">
+            <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800">
                 <div>
-                    {% if v.vehicle_type != 'None' %}
+                    {% if v.vehicle_type and v.vehicle_type != 'None' %}
                         <span>🚗 {{ v.vehicle_type }} {% if v.plate_number %}({{ v.plate_number }}){% endif %}</span>
                     {% else %}
                         <span>🚶 Walk-in</span>
                     {% endif %}
-                    <span class="block text-[11px] text-slate-400 mt-0.5">🕒 {{ v.entry_time }}</span>
+                    <span class="block text-[10px] text-slate-500 mt-0.5">🕒 {{ v.entry_time }}</span>
                 </div>
-                <a href="{{ url_for('view_pass', pass_code=v.pass_code) }}" class="inline-flex items-center gap-1 text-indigo-600 font-semibold text-xs bg-indigo-50 px-3 py-1.5 rounded-lg">View Pass</a>
+                <div class="flex items-center gap-1.5">
+                    <a href="{{ url_for('edit_visitor', id=v.id) }}" class="inline-flex items-center gap-1 text-amber-400 font-semibold text-[11px] bg-amber-500/10 border border-amber-500/20 px-2.5 py-1.5 rounded-lg">Edit</a>
+                    <a href="{{ url_for('view_pass', pass_code=v.pass_code) }}" class="inline-flex items-center gap-1 text-indigo-400 font-semibold text-[11px] bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-1.5 rounded-lg">View Pass</a>
+                </div>
             </div>
         </div>
         {% else %}
-        <div class="py-12 text-center text-slate-400">
+        <div class="py-12 text-center text-slate-500">
             <div class="flex flex-col items-center justify-center gap-2">
                 <span class="text-3xl">📭</span>
-                <p class="text-sm font-medium text-slate-500">No visitor records found.</p>
+                <p class="text-xs font-medium text-slate-400">No visitor records found.</p>
             </div>
         </div>
         {% endfor %}
