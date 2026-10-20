@@ -1,183 +1,166 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="max-w-2xl mx-auto bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-200/80">
-    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
-        <span class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl text-xl">📝</span>
-        <div>
-            <h2 class="text-base sm:text-lg font-bold text-slate-900">Register New Visitor</h2>
-            <p class="text-xs text-slate-500">Enter visitor details and capture photo to issue an official entry pass.</p>
+<style>
+    #reader { border: none !important; }
+    #reader video { border-radius: 0.75rem; object-fit: cover; }
+    #reader__dashboard_section_csr button {
+        background-color: #4f46e5 !important;
+        color: white !important;
+        padding: 0.6rem 1.2rem !important;
+        border-radius: 0.75rem !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        border: none !important;
+        margin-top: 0.5rem !important;
+        cursor: pointer !important;
+        transition: background-color 0.2s !important;
+        width: 100% !important;
+    }
+    @media (min-width: 640px) {
+        #reader__dashboard_section_csr button { width: auto !important; }
+    }
+    #reader__dashboard_section_csr button:hover { background-color: #4338ca !important; }
+</style>
+
+<div class="max-w-xl mx-auto space-y-6">
+    <!-- QR Scanner & Code Input Box -->
+    <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/80">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+            <div>
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <span class="p-2 bg-indigo-50 text-indigo-600 rounded-xl">📷</span> Gate Access Verifier
+                </h2>
+                <p class="text-xs text-slate-500 mt-0.5">Scan QR Pass or enter Pass Code for entry/exit verification.</p>
+            </div>
         </div>
+        
+        <!-- Scanner Viewport Container -->
+        <div class="relative bg-slate-900 rounded-2xl p-2 mb-4 overflow-hidden shadow-inner border border-slate-800">
+            <div id="reader" class="w-full rounded-xl overflow-hidden min-h-[220px] sm:min-h-[250px] flex items-center justify-center text-white"></div>
+        </div>
+
+        <!-- Switch Camera Button -->
+        <div class="mb-5 flex justify-center">
+            <button type="button" onclick="toggleCamera()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 shadow-sm">
+                <span>🔄</span> Switch Camera (Front / Back)
+            </button>
+        </div>
+        
+        <!-- Manual Input Form -->
+        <form method="POST" class="flex flex-col sm:flex-row gap-2">
+            <div class="relative flex-grow">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">🏷️</span>
+                <input type="text" name="pass_code" id="passCodeInput" placeholder="Scan barcode or type code (e.g. GP-...)" autofocus required class="w-full pl-10 pr-4 py-2.5 border border-slate-200 bg-slate-50 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition shadow-md shadow-indigo-500/20 text-center">Verify</button>
+        </form>
     </div>
 
-    <form method="POST" class="space-y-4">
-        <!-- Photo Capture Section -->
-        <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">ID Photo Snapshot</label>
-            <div class="flex flex-col sm:flex-row gap-4 items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <div class="w-full sm:w-48 h-48 sm:h-36 bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center relative">
-                    <video id="webcam" autoplay playsinline class="w-full h-full object-cover"></video>
-                    <canvas id="canvas" class="hidden w-full h-full object-cover"></canvas>
-                </div>
-                <input type="hidden" name="photo_data" id="photoData">
-                
-                <div class="flex flex-col gap-2 w-full sm:w-auto">
-                    <button type="button" onclick="takeSnapshot()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 sm:py-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-sm">
-                        <span>📷</span> Capture Photo
-                    </button>
-                    <button type="button" onclick="switchCamera()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 sm:py-2 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1.5">
-                        <span>🔄</span> Switch Camera
-                    </button>
-                    <button type="button" onclick="retakePhoto()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2.5 sm:py-2 rounded-lg text-xs font-medium transition text-center">
-                        Retake
-                    </button>
-                </div>
+    <!-- Verification Result Card -->
+    {% if visitor %}
+    <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-md border border-slate-200/80 animate-fade-in relative overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-1.5 {% if visitor.status == 'Active' %}bg-emerald-500{% else %}bg-slate-400{% endif %}"></div>
+        
+        <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+            <div>
+                <h3 class="font-bold text-slate-900 text-base">Visitor Verification Details</h3>
+                <p class="text-xs text-slate-400 font-mono">CODE: {{ visitor.pass_code }}</p>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold {% if visitor.status == 'Active' %}bg-emerald-50 text-emerald-700 border border-emerald-200{% else %}bg-slate-100 text-slate-600 border border-slate-200{% endif %}">
+                <span class="w-2 h-2 rounded-full {% if visitor.status == 'Active' %}bg-emerald-500 animate-pulse{% else %}bg-slate-400{% endif %}"></span>
+                {{ visitor.status }}
+            </span>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 text-sm mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+            <div>
+                <p class="text-[11px] text-slate-400 uppercase font-semibold">Full Name</p>
+                <p class="font-bold text-slate-900 mt-0.5 text-base sm:text-sm">{{ visitor.full_name }}</p>
+            </div>
+            <div>
+                <p class="text-[11px] text-slate-400 uppercase font-semibold">Category</p>
+                <p class="font-semibold text-slate-700 mt-0.5">{{ visitor.visitor_category }}</p>
+            </div>
+            <div>
+                <p class="text-[11px] text-slate-400 uppercase font-semibold">Visiting</p>
+                <p class="font-semibold text-slate-700 mt-0.5">{{ visitor.person_to_visit }}</p>
+            </div>
+            <div>
+                <p class="text-[11px] text-slate-400 uppercase font-semibold">Purpose</p>
+                <p class="font-semibold text-slate-700 mt-0.5">{{ visitor.purpose }}</p>
+            </div>
+            <div>
+                <p class="text-[11px] text-slate-400 uppercase font-semibold">Vehicle / Plate</p>
+                <p class="font-semibold text-slate-700 mt-0.5">{{ visitor.vehicle_type }} {% if visitor.plate_number %}({{ visitor.plate_number }}){% endif %}</p>
+            </div>
+            <div>
+                <p class="text-[11px] text-slate-400 uppercase font-semibold">Entry Time</p>
+                <p class="font-semibold text-slate-700 mt-0.5 text-xs">{{ visitor.entry_time }}</p>
             </div>
         </div>
 
-        <!-- Name & Category -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Full Name</label>
-                <input type="text" name="full_name" placeholder="e.g. Juan Dela Cruz" required class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Visitor Category</label>
-                <select name="visitor_category" class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-                    <option value="Parent/Guardian">Parent / Guardian</option>
-                    <option value="Delivery/Courier">Delivery / Courier</option>
-                    <option value="Supplier">Supplier</option>
-                    <option value="Official Guest">Official Guest</option>
-                    <option value="Maintenance">Maintenance</option>
-                </select>
-            </div>
+        {% if visitor.status == 'Active' %}
+        <form action="{{ url_for('checkout', pass_code=visitor.pass_code) }}" method="POST">
+            <button type="submit" class="w-full bg-rose-600 hover:bg-rose-500 text-white py-3 rounded-xl text-sm font-bold shadow-md shadow-rose-500/20 transition flex items-center justify-center gap-2">
+                🚪 Check Out Visitor Now
+            </button>
+        </form>
+        {% else %}
+        <div class="p-3.5 bg-slate-100 text-slate-600 text-center rounded-xl text-xs font-semibold border border-slate-200">
+            ✓ Visitor checked out at {{ visitor.exit_time }}
         </div>
-
-        <!-- Contact & Visiting Department -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Contact Number</label>
-                <input type="text" name="contact_number" placeholder="09123456789" required class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Person / Dept to Visit</label>
-                <input type="text" name="person_to_visit" placeholder="e.g. Registrar Office" required class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-            </div>
-        </div>
-
-        <!-- Purpose of Visit -->
-        <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Purpose of Visit</label>
-            <input type="text" name="purpose" placeholder="e.g. Document Request, Official Meeting" required class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-        </div>
-
-        <!-- ID Type & Reference Number -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">ID Presented</label>
-                <select name="id_type" class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-                    <option value="Driver's License">Driver's License</option>
-                    <option value="Company ID">Company ID</option>
-                    <option value="Government ID">Government ID / Passport</option>
-                    <option value="Student ID">Student ID</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">ID Reference Number</label>
-                <input type="text" name="id_number" placeholder="ID Number" required class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-            </div>
-        </div>
-
-        <!-- Vehicle Details -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Vehicle Type</label>
-                <select name="vehicle_type" class="w-full border border-slate-200 bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-                    <option value="None">Walk-in (No Vehicle)</option>
-                    <option value="Car / SUV">Car / SUV</option>
-                    <option value="Motorcycle">Motorcycle</option>
-                    <option value="Delivery Truck / Van">Delivery Truck / Van</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Plate Number (Optional)</label>
-                <input type="text" name="plate_number" placeholder="ABC-1234" class="w-full border border-slate-200 bg-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-            </div>
-        </div>
-
-        <!-- Form Actions -->
-        <div class="pt-4 flex flex-col-reverse sm:flex-row justify-end gap-3 border-t border-slate-100 mt-6">
-            <a href="{{ url_for('index') }}" class="w-full sm:w-auto text-center px-5 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Cancel</a>
-            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition shadow-md shadow-indigo-500/20">Generate Pass</button>
-        </div>
-    </form>
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
 
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script>
-    const video = document.getElementById('webcam');
-    const canvas = document.getElementById('canvas');
-    const photoInput = document.getElementById('photoData');
+    function onScanSuccess(decodedText, decodedResult) {
+        document.getElementById('passCodeInput').value = decodedText;
+        document.getElementById('passCodeInput').form.submit();
+    }
 
-    let currentStream = null;
-    let currentFacingMode = "user"; // Unang magsisimula sa Front Camera ("user"), pwede ring "environment" para sa Back
+    let html5QrCode = new Html5Qrcode("reader");
+    let currentFacingMode = "environment"; // Magsisimula sa Back Camera sa mobile
+    let isScanning = false;
 
-    function stopCurrentStream() {
-        if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
+    const config = { fps: 15, qrbox: { width: 220, height: 220 }, aspectRatio: 1.0 };
+
+    function startScanner(facingMode) {
+        if (isScanning) {
+            html5QrCode.stop().then(() => {
+                isScanning = false;
+                initScanner(facingMode);
+            }).catch(err => console.log("Error stopping scanner:", err));
+        } else {
+            initScanner(facingMode);
         }
     }
 
-    function startCamera(facingMode) {
-        stopCurrentStream();
-
-        navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: facingMode,
-                width: { ideal: 640 },
-                height: { ideal: 480 }
-            }
-        })
-        .then(stream => {
-            currentStream = stream;
-            video.srcObject = stream;
+    function initScanner(facingMode) {
+        html5QrCode.start({ facingMode: facingMode }, config, onScanSuccess)
+        .then(() => {
+            isScanning = true;
             currentFacingMode = facingMode;
         })
         .catch(err => {
-            console.log("Error starting camera mode:", facingMode, err);
-            // Fallback kung hindi gumana ang napiling mode
+            console.log("Scanner start failed for mode:", facingMode, err);
+            // Fallback sa ano mang camera na available kung mag-error
             if (facingMode === "environment") {
-                navigator.mediaDevices.getUserMedia({ video: true })
-                    .then(stream => {
-                        currentStream = stream;
-                        video.srcObject = stream;
-                    });
+                html5QrCode.start({ facingMode: "user" }, config, onScanSuccess)
+                .then(() => { isScanning = true; currentFacingMode = "user"; });
             }
         });
     }
 
-    // Unang pag-load ng pahina
-    startCamera(currentFacingMode);
+    // Pag-start sa pag-load ng page
+    startScanner(currentFacingMode);
 
-    function switchCamera() {
-        // Palitan ang facing mode (pag Front, gagawing Back; pag Back, gagawing Front)
-        const newMode = (currentFacingMode === "user") ? "environment" : "user";
-        startCamera(newMode);
-    }
-
-    function takeSnapshot() {
-        const context = canvas.getContext('2d');
-        canvas.width = 300;
-        canvas.height = 225;
-        context.drawImage(video, 0, 0, 300, 225);
-        const dataUrl = canvas.toDataURL('image/png');
-        photoInput.value = dataUrl;
-        video.classList.add('hidden');
-        canvas.classList.remove('hidden');
-    }
-
-    function retakePhoto() {
-        photoInput.value = "";
-        canvas.classList.add('hidden');
-        video.classList.remove('hidden');
+    // Function para sa button ng pagpapalit ng camera
+    function toggleCamera() {
+        const nextMode = (currentFacingMode === "environment") ? "user" : "environment";
+        startScanner(nextMode);
     }
 </script>
 {% endblock %}
