@@ -270,6 +270,18 @@ def edit_visitor(id):
         
     return render_template("edit_visitor.html", visitor=visitor)
 
+@app.route("/delete/<int:id>", methods=["POST"])
+@admin_required
+def delete_visitor(id):
+    """Admin Route para mag-delete ng visitor record."""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM visitors WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    flash("Visitor record deleted successfully.", "success")
+    return redirect(url_for("index"))
+
 @app.route("/blacklist", methods=["GET", "POST"])
 @admin_required
 def blacklist():
