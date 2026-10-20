@@ -7,27 +7,27 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
 
     <!-- Top Navigation Bar -->
-    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/30 text-white font-bold">🛡️</div>
-                <span class="text-base sm:text-lg font-bold tracking-wider text-white">GATE<span class="text-indigo-400">PASS</span></span>
+                <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-600/20 text-white font-bold">🛡️</div>
+                <span class="text-base sm:text-lg font-bold tracking-wider text-slate-900">GATE<span class="text-indigo-600">PASS</span></span>
             </div>
 
             <!-- Navigation Links -->
             <nav class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium">
-                <a href="{{ url_for('index') }}" class="text-slate-300 hover:text-white transition px-2.5 py-1.5 rounded-lg hover:bg-slate-800">Dashboard</a>
-                <a href="{{ url_for('register') }}" class="text-slate-300 hover:text-white transition px-2.5 py-1.5 rounded-lg hover:bg-slate-800">New Visitor</a>
-                <a href="{{ url_for('blacklist') }}" class="text-slate-300 hover:text-white transition px-2.5 py-1.5 rounded-lg hover:bg-slate-800">Blacklist</a>
+                <a href="{{ url_for('index') }}" class="text-slate-600 hover:text-slate-900 transition px-2.5 py-1.5 rounded-lg hover:bg-slate-100">Dashboard</a>
+                <a href="{{ url_for('register') }}" class="text-slate-600 hover:text-slate-900 transition px-2.5 py-1.5 rounded-lg hover:bg-slate-100">New Visitor</a>
+                <a href="{{ url_for('blacklist') }}" class="text-slate-600 hover:text-slate-900 transition px-2.5 py-1.5 rounded-lg hover:bg-slate-100">Blacklist</a>
                 <a href="{{ url_for('verify') }}" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition shadow-sm font-semibold">Scanner / Verify</a>
                 
                 {% if session.get('logged_in') %}
-                    <a href="{{ url_for('logout') }}" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-1.5 rounded-lg transition">Logout</a>
+                    <a href="{{ url_for('logout') }}" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-3 py-1.5 rounded-lg transition">Logout</a>
                 {% else %}
-                    <a href="{{ url_for('login') }}" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg transition">Login</a>
+                    <a href="{{ url_for('login') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-lg transition">Login</a>
                 {% endif %}
             </nav>
         </div>
@@ -39,7 +39,7 @@
             {% if messages %}
                 <div class="space-y-2 mb-6">
                     {% for category, message in messages %}
-                        <div class="p-4 rounded-xl text-xs sm:text-sm font-medium border flex items-center justify-between shadow-sm {% if category == 'danger' or category == 'error' %}bg-red-500/10 text-red-400 border-red-500/20{% elif category == 'success' %}bg-emerald-500/10 text-emerald-400 border-emerald-500/20{% else %}bg-indigo-500/10 text-indigo-400 border-indigo-500/20{% endif %}">
+                        <div class="p-4 rounded-xl text-xs sm:text-sm font-medium border flex items-center justify-between shadow-sm {% if category == 'danger' or category == 'error' %}bg-red-50 text-red-700 border-red-200{% elif category == 'success' %}bg-emerald-50 text-emerald-700 border-emerald-200{% else %}bg-indigo-50 text-indigo-700 border-indigo-200{% endif %}">
                             <span>{{ message }}</span>
                         </div>
                     {% endfor %}
@@ -52,7 +52,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-900/40 border-t border-slate-800/80 py-4 text-center text-xs text-slate-500">
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
         GatePass Secure Facility Management System &copy; 2026 &bull; All Rights Reserved
     </footer>
 
