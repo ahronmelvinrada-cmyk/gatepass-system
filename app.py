@@ -231,6 +231,45 @@ def index():
     conn.close()
     return render_template("index.html", visitors=visitors, active_count=active_count, today_count=today_count, search=search, category_filter=category_filter)
 
+@app.route("/edit/<int:id>", methods=["GET", "POST"])
+@admin_required
+def edit_visitor(id):
+    """Admin Route para i-edit ang impormasyon ng isang bisita."""
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    if request.method == "POST":
+        full_name = request.form["full_name"].strip()
+        visitor_category = request.form["visitor_category"]
+        contact_number = request.form["contact_number"]
+        person_to_visit = request.form["person_to_visit"]
+        purpose = request.form["purpose"]
+        vehicle_type = request.form.get("vehicle_type", "None")
+        plate_number = request.form.get("plate_number", "").upper()
+        
+        cursor.execute("""
+            UPDATE visitors 
+            SET full_name = ?, visitor_category = ?, contact_number = ?, 
+                person_to_visit = ?, purpose = ?, vehicle_type = ?, plate_number = ?
+            WHERE id = ?
+        """, (full_name, visitor_category, contact_number, person_to_visit, purpose, vehicle_type, plate_number, id))
+        
+        conn.commit()
+        conn.close()
+        flash("Visitor details updated successfully!", "success")
+        return redirect(url_for("index"))
+        
+    cursor.execute("SELECT * FROM visitors WHERE id = ?", (id,))
+    visitor = cursor.fetchone()
+    conn.close()
+    
+    if not visitor:
+        flash("Visitor record not found.", "danger")
+        return redirect(url_for("index"))
+        
+    return render_template("edit_visitor.html", visitor=visitor)
+
 @app.route("/blacklist", methods=["GET", "POST"])
 @admin_required
 def blacklist():
