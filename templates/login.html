@@ -1,1 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="min-h-[75vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-slate-900/90 backdrop-blur-md p-8 rounded-3xl border border-slate-800 shadow-2xl relative overflow-hidden">
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl"></div>
+        <div class="text-center relative">
+            <div class="w-16 h-16 bg-indigo-600/20 border border-indigo-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
+                🔒
+            </div>
+            <h2 class="text-2xl font-black text-white tracking-tight">Admin Portal Access</h2>
+            <p class="text-xs text-slate-400 mt-1">Mag-login gamit ang iyong Administrator credentials</p>
+        </div>
 
+        {% if error %}
+        <div class="bg-red-500/10 border border-red-500/20 text-red-400 text-xs px-4 py-3 rounded-xl flex items-center gap-2">
+            <span>⚠️</span> {{ error }}
+        </div>
+        {% endif %}
+
+        <form class="mt-6 space-y-4" method="POST" action="{{ url_for('login') }}">
+            <div>
+                <label for="username" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Username</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">👤</span>
+                    <input id="username" name="username" type="text" required class="w-full pl-9 pr-4 py-2.5 border border-slate-700/80 rounded-xl text-sm bg-slate-800/90 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" placeholder="Admin username">
+                </div>
+            </div>
+
+            <div>
+                <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Password</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔑</span>
+                    <input id="password" name="password" type="password" required class="w-full pl-9 pr-4 py-2.5 border border-slate-700/80 rounded-xl text-sm bg-slate-800/90 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" placeholder="••••••••">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2">
+                <span>Sign In to Command Center</span> ➔
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
